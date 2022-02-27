@@ -70,19 +70,19 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(env('DEMO_MODE') == 'On'){
-            flash(translate('Sorry! the action is not permitted in demo '))->error();
-            return back();
-        }
+        // if(env('DEMO_MODE') == 'On'){
+        //     flash(translate('Sorry! the action is not permitted in demo '))->error();
+        //     return back();
+        // }
 
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
-        if($request->new_password != null && ($request->new_password == $request->confirm_password)){
+        if ($request->new_password != null && ($request->new_password == $request->confirm_password)) {
             $user->password = Hash::make($request->new_password);
         }
         $user->avatar = $request->avatar;
-        if($user->save()){
+        if ($user->save()) {
             flash(translate('Your Profile has been updated successfully!'))->success();
             return back();
         }

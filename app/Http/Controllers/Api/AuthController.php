@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUndefinedClassInspection */
+<?php
+
+/** @noinspection PhpUndefinedClassInspection */
 
 namespace App\Http\Controllers\Api;
 
@@ -43,23 +45,23 @@ class AuthController extends Controller
             'verification_code' => rand(100000, 999999)
         ]);
 
-        if(get_setting('email_verification') != 1){
+        if (get_setting('email_verification') != 1) {
             $user->email_verified_at = date('Y-m-d H:m:s');
-        }
-        else {
+        } else {
             $user->notify(new EmailVerificationNotification());
         }
         $user->save();
 
-        if($request->has('temp_user_id') && $request->temp_user_id != null){
+        if ($request->has('temp_user_id') && $request->temp_user_id != null) {
             Cart::where('temp_user_id', $request->temp_user_id)->update(
-            [
-                'user_id' => $user->id,
-                'temp_user_id' => null
-            ]);
+                [
+                    'user_id' => $user->id,
+                    'temp_user_id' => null
+                ]
+            );
         }
 
-        if(get_setting('email_verification') == 1){
+        if (get_setting('email_verification') == 1) {
             return response()->json([
                 'success' => true,
                 'message' => translate('A verification code has been sent to your email.')
@@ -84,17 +86,18 @@ class AuthController extends Controller
             ], 200);
 
         $user = $request->user();
-        
-        if($request->has('temp_user_id') && $request->temp_user_id != null){
+
+        if ($request->has('temp_user_id') && $request->temp_user_id != null) {
             Cart::where('temp_user_id', $request->temp_user_id)->update(
-            [
-                'user_id' => $user->id,
-                'temp_user_id' => null
-            ]);
+                [
+                    'user_id' => $user->id,
+                    'temp_user_id' => null
+                ]
+            );
         }
-        
-        if($user->user_type == 'customer'){
-            if(get_setting('email_verification') == 1 && $user->email_verified_at == null){
+
+        if ($user->user_type == 'customer') {
+            if (get_setting('email_verification') == 1 && $user->email_verified_at == null) {
                 return response()->json([
                     'success' => true,
                     'verified' => false,
@@ -103,8 +106,7 @@ class AuthController extends Controller
             }
             $tokenResult = $user->createToken('Personal Access Token');
             return $this->loginSuccess($tokenResult, $user);
-        }
-        else{
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => translate('Only customers can login here')
@@ -112,20 +114,21 @@ class AuthController extends Controller
         }
     }
 
-    public function verify(Request $request){
+    public function verify(Request $request)
+    {
         $user = User::where('email', $request->email)->first();
-        if(!$user){
+        if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => translate('No user found with this email address.')
             ], 200);
         }
-        if($user->verification_code != $request->code){
+        if ($user->verification_code != $request->code) {
             return response()->json([
                 'success' => false,
                 'message' => translate('Code does not match.')
             ], 200);
-        }else{
+        } else {
             $user->email_verified_at = date('Y-m-d H:m:s');
             $user->save();
             $tokenResult = $user->createToken('Personal Access Token');
@@ -133,12 +136,13 @@ class AuthController extends Controller
         }
     }
 
-    public function resend_code(Request $request){
+    public function resend_code(Request $request)
+    {
         if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
 
             $user = User::where('email', $request->email)->first();
             if ($user != null) {
-                $user->verification_code = rand(100000,999999);
+                $user->verification_code = rand(100000, 999999);
                 $user->save();
 
                 $user->notify(new EmailVerificationNotification());
@@ -147,15 +151,13 @@ class AuthController extends Controller
                     'success' => true,
                     'message' => translate('A verification code has been sent to your email.')
                 ], 200);
-            }
-            else {
+            } else {
                 return response()->json([
                     'success' => false,
                     'message' => translate('No user found with this email address.')
                 ], 200);
             }
-        }
-        else{
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => translate('Invalid email address.')

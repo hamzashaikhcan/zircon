@@ -44,10 +44,10 @@ class AddonController extends Controller
 
         cache_clear();
 
-        if (env('DEMO_MODE') == 'On') {
-            flash(translate('This action is disabled in demo mode'))->error();
-            return back();
-        }
+        // if (env('DEMO_MODE') == 'On') {
+        //     flash(translate('This action is disabled in demo mode'))->error();
+        //     return back();
+        // }
 
         if (class_exists('ZipArchive')) {
             if ($request->hasFile('addon_zip')) {
@@ -162,10 +162,10 @@ class AddonController extends Controller
      */
     public function activation(Request $request)
     {
-        if (env('DEMO_MODE') == 'On') {
-            flash(translate('This action is disabled in demo mode'))->error();
-            return 0;
-        }
+        // if (env('DEMO_MODE') == 'On') {
+        //     flash(translate('This action is disabled in demo mode'))->error();
+        //     return 0;
+        // }
         $addon = Addon::find($request->id);
         $addon->activated = $request->status;
         $addon->save();

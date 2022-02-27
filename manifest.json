@@ -1,6 +1,6 @@
 {
-    "name": "The Shop",
-    "short_name": "The Shop",
+    "name": "Zircon",
+    "short_name": "Zircon",
     "scope": "/",
     "start_url": "/",
     "display": "standalone",
