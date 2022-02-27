@@ -14,7 +14,7 @@
 # /public/download
 # /public/invoices
 # /storage/*.key
-/vendor
+/vendor/
 # /temp
 # /.idea
 # /.vagrant
