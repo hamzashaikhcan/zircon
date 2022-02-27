@@ -28,7 +28,7 @@ yarn-error.log
 updates/
 app/Addons
 temp/
-composer.lock
+# composer.lock
 package-lock.json
 *.lock
 resources/lang/en.json
